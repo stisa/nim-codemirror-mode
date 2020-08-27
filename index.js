@@ -1,21 +1,18 @@
-import CodeMirror from "codemirror";
-
-import "codemirror/mode/meta";
-
+module.exports.register = (CodeMirror) => {
 // CodeMirror mode based on PMunch's https://github.com/PMunch/nim-playground-frontend
 CodeMirror.defineMode("nim", (conf, parserConf) => {
-  var ERRORCLASS = "error";
+  let ERRORCLASS = "error";
 
   function wordRegexp(words) {
     return new RegExp("^((" + words.join(")|(") + "))\\b");
   }
 
-  var operators = new RegExp(
+  let operators = new RegExp(
     "\\=\\+\\-\\*\\/\\<\\>\\@\\$\\~\\&\\%\\|\\!\\?\\^\\:\\\\"
   );
-  var identifiers = new RegExp("^[_A-Za-z][_A-Za-z0-9]*");
+  let identifiers = new RegExp("^[_A-Za-z][_A-Za-z0-9]*");
 
-  var commonkeywords = [
+  let commonkeywords = [
     "addr",
     "asm",
     "bind",
@@ -88,7 +85,7 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
     "of",
   ];
 
-  var commonBuiltins = [
+  let commonBuiltins = [
     "int",
     "int8",
     "int16",
@@ -339,20 +336,20 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
   if (parserConf.extra_builtins != undefined)
     commonBuiltins = commonBuiltins.concat(parserConf.extra_builtins);
 
-  var keywords = wordRegexp(commonkeywords);
-  var builtins = wordRegexp(commonBuiltins);
+  let keywords = wordRegexp(commonkeywords);
+  let builtins = wordRegexp(commonBuiltins);
 
-  var indentInfo = null;
+  let indentInfo = null;
 
-  var stringPrefixes = new RegExp("^(('{3}|\"{3}|['\"]))", "i");
+  let stringPrefixes = new RegExp("^(('{3}|\"{3}|['\"]))", "i");
 
   // tokenizers
   function tokenBase(stream, state) {
     // Handle scope changes
     if (stream.sol()) {
-      var scopeOffset = state.scopes[0].offset;
+      let scopeOffset = state.scopes[0].offset;
       if (stream.eatSpace()) {
-        var lineOffset = stream.indentation();
+        let lineOffset = stream.indentation();
         if (lineOffset > scopeOffset) {
           indentInfo = "indent";
         } else if (lineOffset < scopeOffset) {
@@ -368,7 +365,7 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
 
     if (stream.eatSpace()) return null;
 
-    var ch = stream.peek();
+    let ch = stream.peek();
 
     // Handle Comments
     if (ch === "#") {
@@ -384,7 +381,7 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
 
     // Handle Number Literals
     if (stream.match(/^[0-9\.]/, false)) {
-      var floatLiteral = false;
+      let floatLiteral = false;
       // Floats
       if (stream.match(/^\d*\.\d+(e[\+\-]?\d+)?/i)) {
         floatLiteral = true;
@@ -401,7 +398,7 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
         return "number";
       }
       // Integers
-      var intLiteral = false;
+      let intLiteral = false;
       // Hex
       if (stream.match(/^0x[0-9a-f]+/i)) {
         intLiteral = true;
@@ -463,8 +460,8 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
   }
 
   function tokenStringFactory(delimiter) {
-    var singleline = delimiter.length == 1;
-    var OUTCLASS = "string";
+    let singleline = delimiter.length == 1;
+    let OUTCLASS = "string";
 
     function tokenString(stream, state) {
       while (!stream.eol()) {
@@ -497,13 +494,13 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
 
   function indent(stream, state, type) {
     type = type || "nim";
-    var indentUnit = 0;
+    let indentUnit = 0;
     if (type === "nim") {
       if (state.scopes[0].type !== "nim") {
         state.scopes[0].offset = stream.indentation();
         return;
       }
-      for (var i = 0; i < state.scopes.length; ++i) {
+      for (let i = 0; i < state.scopes.length; ++i) {
         if (state.scopes[i].type === "nim") {
           indentUnit = state.scopes[i].offset + conf.indentUnit;
           break;
@@ -523,9 +520,9 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
     type = type || "nim";
     if (state.scopes.length == 1) return;
     if (state.scopes[0].type === "nim") {
-      var _indent = stream.indentation();
-      var _indent_index = -1;
-      for (var i = 0; i < state.scopes.length; ++i) {
+      let _indent = stream.indentation();
+      let _indent_index = -1;
+      for (let i = 0; i < state.scopes.length; ++i) {
         if (_indent === state.scopes[i].offset) {
           _indent_index = i;
           break;
@@ -553,7 +550,7 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
   }
 
   function tokenComment(stream, state) {
-    var maybeEnd = false,
+    let maybeEnd = false,
       ch;
     while ((ch = stream.next())) {
       if (ch == "#" && maybeEnd) {
@@ -567,8 +564,8 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
 
   function tokenLexer(stream, state) {
     indentInfo = null;
-    var style = state.tokenize(stream, state);
-    var current = stream.current();
+    let style = state.tokenize(stream, state);
+    let current = stream.current();
 
     // Handle '.' connected identifiers
     if (current === ".") {
@@ -597,13 +594,13 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
 
     if (current === "lambda" || current === "proc") state.lambda = true;
 
-    var delimiter_index = "[({".indexOf(current);
+    let delimiter_index = "[({".indexOf(current);
 
     if (delimiter_index !== -1) {
       indent(stream, state, "])}".slice(delimiter_index, delimiter_index + 1));
     } else if (
       stream.eol() &&
-      current.match(/\=|\:|import|include|type|const|var|let/)
+      current.match(/\=|\:|import|include|type|const|let|let/)
     ) {
       indent(stream, state);
     }
@@ -629,7 +626,7 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
     return style;
   }
 
-  var external = {
+  let external = {
     startState: function (basecolumn) {
       return {
         tokenize: tokenBase,
@@ -642,11 +639,11 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
     },
 
     token: function (stream, state) {
-      var style = tokenLexer(stream, state);
+      let style = tokenLexer(stream, state);
 
       state.lastStyle = style;
 
-      var current = stream.current();
+      let current = stream.current();
       if (current && style) state.lastToken = current;
 
       if (stream.eol() && state.lambda) state.lambda = false;
@@ -671,9 +668,11 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
 });
 
 CodeMirror.defineMIME("text/x-nim", "nim");
+
 CodeMirror.modeInfo.push({
   name: "Nim",
   mime: "text/x-nim",
   mode: "name",
   ext: ["nim"],
 });
+};
