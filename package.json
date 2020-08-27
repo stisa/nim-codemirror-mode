@@ -1,0 +1,26 @@
+{
+  "name": "nim-codemirror-mode",
+  "version": "0.1.0",
+  "description": "A codemirror mode for nim",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stisa/nim-codemirror-mode.git"
+  },
+  "keywords": [
+    "nim",
+    "codemirror",
+    "syntax",
+    "highlight",
+    "mode"
+  ],
+  "author": "stisa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stisa/nim-codemirror-mode/issues"
+  },
+  "homepage": "https://github.com/stisa/nim-codemirror-mode#readme"
+}
