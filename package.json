@@ -1,6 +1,6 @@
 {
   "name": "nim-codemirror-mode",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A codemirror mode for nim",
   "main": "index.js",
   "scripts": {
