@@ -456,7 +456,7 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
 
     // Handle non-detected items
     stream.next();
-    return ERRORCLASS;
+    return null;
   }
 
   function tokenStringFactory(delimiter) {
@@ -569,8 +569,8 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
 
     // Handle '.' connected identifiers
     if (current === ".") {
-      style = stream.match(identifiers, false) ? null : ERRORCLASS;
-      if (style === null && state.lastStyle === "meta") {
+      style = null;
+      if (state.lastStyle === "meta") {
         // Apply 'meta' style to '.' connected identifiers when
         // appropriate.
         style = "meta";
