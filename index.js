@@ -1,6 +1,5 @@
-module.exports.register = (CodeMirror) => {
 // CodeMirror mode based on PMunch's https://github.com/PMunch/nim-playground-frontend
-CodeMirror.defineMode("nim", (conf, parserConf) => {
+module.exports.nim = function nim(conf, parserConf) {
   let ERRORCLASS = "error";
 
   function wordRegexp(words) {
@@ -665,8 +664,10 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
   };
 
   return external;
-});
+};
 
+module.exports.register = (CodeMirror) => {
+CodeMirror.defineMode("nim", nim);
 CodeMirror.defineMIME("text/x-nim", "nim");
 
 CodeMirror.modeInfo.push({
