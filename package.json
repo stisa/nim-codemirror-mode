@@ -11,7 +11,7 @@
     "url": "git+https://github.com/stisa/nim-codemirror-mode.git"
   },
   "peerDependencies": {
-    "codemirror": "^5.56.0"
+    "codemirror": "^5.56.0 || ^6"
   },
   "keywords": [
     "nim",
